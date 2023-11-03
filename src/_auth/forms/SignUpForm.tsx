@@ -18,6 +18,8 @@ import { Link } from "react-router-dom";
 import { createUserAccount } from "@/lib/appwirte/api";
 
 const SignUpForm = () => {
+    const { toast } = useToast();
+
     // 1. Define your form.
     const form = useForm<z.infer<typeof SignupValidation>>({
         resolver: zodResolver(SignupValidation),
@@ -33,6 +35,9 @@ const SignUpForm = () => {
     async function onSubmit(values: z.infer<typeof SignupValidation>) {
         const newUser = await createUserAccount(values);
 
+        if (!newUser) {
+            return toast({ title: "Sign up failed. Please try again." });
+        }
         console.log(newUser);
     }
     return (
