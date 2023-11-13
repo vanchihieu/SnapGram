@@ -20,8 +20,10 @@ import { useToast } from "@/components/ui/use-toast";
 import { useUserContext } from "@/context/AuthContext";
 
 import FileUploader from "../shared/FileUploader";
-import Loader from "../shared/Loader";
-import { useCreatePost } from "@/lib/react-query/queriesAndMutations";
+import {
+    useCreatePost,
+    useUpdatePost,
+} from "@/lib/react-query/queriesAndMutations";
 
 type PostFormProps = {
     post?: Models.Document;
@@ -45,8 +47,8 @@ const PostForm = ({ post, action }: PostFormProps) => {
     // Query
     const { mutateAsync: createPost, isLoading: isLoadingCreate } =
         useCreatePost();
-    // const { mutateAsync: updatePost, isLoading: isLoadingUpdate } =
-    //     useUpdatePost();
+    const { mutateAsync: updatePost, isLoading: isLoadingUpdate } =
+        useUpdatePost();
 
     // Handler
     const handleSubmit = async (value: z.infer<typeof PostValidation>) => {
@@ -177,9 +179,10 @@ const PostForm = ({ post, action }: PostFormProps) => {
                     <Button
                         type="submit"
                         className="shad-button_primary whitespace-nowrap"
-                        disabled={isLoadingCreate }
+                        disabled={isLoadingCreate || isLoadingUpdate}
                     >
-                       Post
+                        {isLoadingCreate || (isLoadingUpdate && "Loading ...")}
+                        {action} Post
                     </Button>
                 </div>
             </form>

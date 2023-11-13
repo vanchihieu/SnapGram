@@ -62,10 +62,10 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
         if (savedPostRecord) {
             setIsSaved(false);
             return deleteSavePost(savedPostRecord.$id);
+        } else {
+            savePost({ userId: userId, postId: post.$id });
+            setIsSaved(true);
         }
-
-        savePost({ userId: userId, postId: post.$id });
-        setIsSaved(true);
     };
 
     const containerStyles = location.pathname.startsWith("/profile")
@@ -78,11 +78,11 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
         >
             <div className="flex gap-2 mr-5">
                 <img
-                    src={`${
+                    src={
                         checkIsLiked(likes, userId)
                             ? "/assets/icons/liked.svg"
                             : "/assets/icons/like.svg"
-                    }`}
+                    }
                     alt="like"
                     width={20}
                     height={20}
