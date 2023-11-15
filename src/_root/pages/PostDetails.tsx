@@ -1,6 +1,8 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui";
+import { Loader } from "@/components/shared";
+import { GridPostList, PostStats } from "@/components/shared";
 
 import { multiFormatDateString } from "@/lib/utils";
 import { useUserContext } from "@/context/AuthContext";
@@ -8,8 +10,6 @@ import {
     useDeletePost,
     useGetPostById,
 } from "@/lib/react-query/queriesAndMutations";
-import { Loader } from "lucide-react";
-import PostStats from "@/components/shared/PostStats";
 
 const PostDetails = () => {
     const navigate = useNavigate();
@@ -20,19 +20,19 @@ const PostDetails = () => {
     // const { data: userPosts, isLoading: isUserPostLoading } = useGetUserPosts(
     //     post?.creator.$id
     // );
-    // const { mutate: deletePost } = useDeletePost();
+    const { mutate: deletePost } = useDeletePost();
 
     // const relatedPosts = userPosts?.documents.filter(
     //     (userPost) => userPost.$id !== id
     // );
 
-    // const handleDeletePost = () => {
-    //     deletePost({ postId: id, imageId: post?.imageId });
-    //     navigate(-1);
-    // };
+    const handleDeletePost = () => {
+        deletePost({ postId: id, imageId: post?.imageId });
+        navigate(-1);
+    };
 
     return (
-        <div className="flex flex-col flex-1 gap-10 overflow-scroll py-10 px-5 md:p-14 custom-scrollbar items-center">
+        <div className="post_details-container">
             <div className="hidden md:flex max-w-5xl w-full">
                 <Button
                     onClick={() => navigate(-1)}
@@ -52,14 +52,14 @@ const PostDetails = () => {
             {isLoading || !post ? (
                 <Loader />
             ) : (
-                <div className="bg-dark-2 w-full max-w-5xl rounded-[30px] flex-col flex xl:flex-row border border-dark-4 xl:rounded-l-[24px];">
+                <div className="post_details-card">
                     <img
                         src={post?.imageUrl}
                         alt="creator"
-                        className="h-80 lg:h-[480px] xl:w-[48%] rounded-t-[30px] xl:rounded-l-[24px] xl:rounded-tr-none object-cover p-5 bg-dark-1"
+                        className="post_details-img"
                     />
 
-                    <div className="bg-dark-2 flex flex-col gap-5 lg:gap-7 flex-1 items-start p-8 rounded-[30px]">
+                    <div className="post_details-info">
                         <div className="flex-between w-full">
                             <Link
                                 to={`/profile/${post?.creator.$id}`}
@@ -108,7 +108,7 @@ const PostDetails = () => {
                                 </Link>
 
                                 <Button
-                                    // onClick={handleDeletePost}
+                                    onClick={handleDeletePost}
                                     variant="ghost"
                                     className={`ost_details-delete_btn ${
                                         user.id !== post?.creator.$id &&
